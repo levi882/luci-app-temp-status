@@ -126,10 +126,11 @@ jobs:
         run: |
           cat > .config <<'EOF'
           CONFIG_PACKAGE_luci-app-temp-status=m
-          CONFIG_PACKAGE_luci-i18n-temp-status-zh-cn=m
+          CONFIG_LUCI_LANG_zh_Hans=m
           EOF
           make defconfig
           grep -q '^CONFIG_PACKAGE_luci-app-temp-status=m$' .config
+          grep -q '^CONFIG_LUCI_LANG_zh_Hans=m$' .config
           grep -q '^CONFIG_PACKAGE_luci-i18n-temp-status-zh-cn=m$' .config
 
       - name: Compile package
