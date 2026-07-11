@@ -69,8 +69,37 @@ jobs:
           fi
 
           wget -qO sdk-cache/sha256sums "${base_url}/sha256sums"
-          grep " ${SDK_ARCHIVE}$" sdk-cache/sha256sums | \
-            (cd sdk-cache && sha256sum --check)
+
+          # Accept the binary marker (*) and optional path prefixes used in sha256sums.
+          expected_hash="$(awk -v archive="${SDK_ARCHIVE}" '
+            {
+              file = $2
+              sub(/^\*/, "", file)
+              sub(/^.*\//, "", file)
+              if (file == archive) {
+                print $1
+                exit
+              }
+            }
+          ' sdk-cache/sha256sums)"
+
+          if [ -z "$expected_hash" ]; then
+            echo "ERROR: ${SDK_ARCHIVE} not found in sha256sums file." >&2
+            echo "Available archive entries in sha256sums:" >&2
+            grep -E '\.tar\.' sdk-cache/sha256sums >&2 || cat sdk-cache/sha256sums >&2
+            exit 1
+          fi
+
+          actual_hash=$(sha256sum "sdk-cache/${SDK_ARCHIVE}" | awk '{print $1}')
+
+          if [ "$expected_hash" != "$actual_hash" ]; then
+            echo "ERROR: SHA256 mismatch for ${SDK_ARCHIVE}" >&2
+            echo "  Expected: $expected_hash" >&2
+            echo "  Actual:   $actual_hash" >&2
+            exit 1
+          fi
+
+          echo "SDK archive verified: $actual_hash"
 
           tar --zstd -xf "sdk-cache/${SDK_ARCHIVE}" \
             --strip-components=1 -C openwrt-sdk
