@@ -124,8 +124,13 @@ jobs:
       - name: Configure SDK
         working-directory: openwrt-sdk
         run: |
-          printf 'CONFIG_PACKAGE_luci-app-temp-status=m\n' > .config
+          cat > .config <<'EOF'
+          CONFIG_PACKAGE_luci-app-temp-status=m
+          CONFIG_PACKAGE_luci-i18n-temp-status-zh-cn=m
+          EOF
           make defconfig
+          grep -q '^CONFIG_PACKAGE_luci-app-temp-status=m$' .config
+          grep -q '^CONFIG_PACKAGE_luci-i18n-temp-status-zh-cn=m$' .config
 
       - name: Compile package
         working-directory: openwrt-sdk
@@ -138,11 +143,21 @@ jobs:
           set -euo pipefail
           mkdir -p artifacts
 
-          find openwrt-sdk/bin/packages -type f \
-            \( -name 'luci-app-temp-status*.apk' -o -name 'luci-i18n-temp-status-zh-cn*.apk' \) \
-            -exec cp -v '{}' artifacts/ \;
+          main_apk="$(find openwrt-sdk/bin/packages -type f \
+            -name 'luci-app-temp-status*.apk' -print -quit)"
+          zh_cn_apk="$(find openwrt-sdk/bin/packages -type f \
+            -name 'luci-i18n-temp-status-zh-cn*.apk' -print -quit)"
 
-          test -n "$(find artifacts -maxdepth 1 -type f -name '*.apk' -print -quit)"
+          if [ -z "${main_apk}" ]; then
+            echo 'ERROR: Main APK package was not generated.' >&2
+            exit 1
+          fi
+          if [ -z "${zh_cn_apk}" ]; then
+            echo 'ERROR: Simplified Chinese i18n APK package was not generated.' >&2
+            exit 1
+          fi
+
+          cp -v "${main_apk}" "${zh_cn_apk}" artifacts/
           sha256sum artifacts/*.apk | tee artifacts/sha256sums
 
       - name: Upload APK packages
