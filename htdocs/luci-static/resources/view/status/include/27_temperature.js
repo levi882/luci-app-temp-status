@@ -19,27 +19,27 @@ document.head.append(E('style', {'type': 'text/css'},
 	--app-temp-status-card-bg: var(--background-color-high, #24282d);
 	--app-temp-status-muted: #aab3bb;
 }
-.temp-status-hot {
+.luci-temp-status-widget .temp-status-hot {
 	--temp-status-accent: var(--app-temp-status-hot);
 }
-.temp-status-overheat {
+.luci-temp-status-widget .temp-status-overheat {
 	--temp-status-accent: var(--app-temp-status-overheat);
 }
-.tr.temp-status-hot {
+.luci-temp-status-widget .tr.temp-status-hot {
 	background: rgba(229, 155, 24, .12);
 }
-.tr.temp-status-overheat {
+.luci-temp-status-widget .tr.temp-status-overheat {
 	background: rgba(223, 75, 75, .12);
 }
 
-.temp-status-temp-area {
+.luci-temp-status-widget .temp-status-temp-area {
 	width: 100%;
 	padding: 0 0 1em;
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
 	gap: 12px;
 }
-.temp-status-list-item {
+.luci-temp-status-widget .temp-status-list-item {
 	--temp-status-accent: var(--app-temp-status-normal);
 	position: relative;
 	min-width: 0;
@@ -52,24 +52,24 @@ document.head.append(E('style', {'type': 'text/css'},
 	border-radius: 9px;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, .06);
 }
-.temp-status-card-head {
+.luci-temp-status-widget .temp-status-card-head {
 	display: flex;
 	align-items: flex-start;
 	justify-content: space-between;
 	gap: 10px;
 }
-.temp-status-card-actions {
+.luci-temp-status-widget .temp-status-card-actions {
 	display: flex;
 	align-items: center;
 	gap: 6px;
 }
-.temp-status-card-title {
+.luci-temp-status-widget .temp-status-card-title {
 	display: flex;
 	min-width: 0;
 	flex-direction: column;
 	gap: 3px;
 }
-.temp-status-source-kind {
+.luci-temp-status-widget .temp-status-source-kind {
 	color: var(--app-temp-status-muted);
 	font-size: 10px;
 	font-weight: 600;
@@ -77,14 +77,14 @@ document.head.append(E('style', {'type': 'text/css'},
 	line-height: 1;
 	text-transform: uppercase;
 }
-.temp-status-sensor-name {
+.luci-temp-status-widget .temp-status-sensor-name {
 	min-width: 0;
 	overflow: hidden;
 	font-weight: 600;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 }
-.temp-status-state {
+.luci-temp-status-widget .temp-status-state {
 	padding: 2px 8px;
 	flex: 0 0 auto;
 	color: var(--temp-status-accent);
@@ -94,49 +94,49 @@ document.head.append(E('style', {'type': 'text/css'},
 	font-size: 11px;
 	font-weight: 600;
 }
-.temp-status-reading {
+.luci-temp-status-widget .temp-status-reading {
 	display: flex;
 	align-items: baseline;
 	margin: 12px 0 2px;
 	color: var(--temp-status-accent);
 }
-.temp-status-temp-value {
+.luci-temp-status-widget .temp-status-temp-value {
 	font-size: 32px;
 	font-weight: 650;
 	line-height: 1;
 }
-.temp-status-unit {
+.luci-temp-status-widget .temp-status-unit {
 	margin-left: 4px;
 	font-size: 14px;
 }
-.temp-status-chart {
+.luci-temp-status-widget .temp-status-chart {
 	display: block;
 	width: 100%;
 	height: 72px;
 	margin-top: 7px;
 }
-.temp-status-chart-grid {
+.luci-temp-status-widget .temp-status-chart-grid {
 	stroke: var(--app-temp-status-border-color);
 	stroke-width: 1;
 	stroke-dasharray: 3 4;
 }
-.temp-status-chart-area {
+.luci-temp-status-widget .temp-status-chart-area {
 	fill: var(--temp-status-accent);
 	fill-opacity: .10;
 }
-.temp-status-chart-line {
+.luci-temp-status-widget .temp-status-chart-line {
 	fill: none;
 	stroke: var(--temp-status-accent);
 	stroke-width: 2.4;
 	stroke-linecap: round;
 	stroke-linejoin: round;
 }
-.temp-status-chart-dot {
+.luci-temp-status-widget .temp-status-chart-dot {
 	fill: var(--app-temp-status-card-bg);
 	stroke: var(--temp-status-accent);
 	stroke-width: 2;
 }
-.temp-status-card-foot {
+.luci-temp-status-widget .temp-status-card-foot {
 	display: flex;
 	justify-content: space-between;
 	gap: 8px;
@@ -144,10 +144,10 @@ document.head.append(E('style', {'type': 'text/css'},
 	font-size: 11px;
 }
 
-#temp-status-buttons-wrapper {
+.luci-temp-status-widget #temp-status-buttons-wrapper {
 	margin-bottom: 1em;
 }
-.temp-status-button {
+.luci-temp-status-widget .temp-status-button {
 	display: inline-block;
 	cursor: pointer;
 	margin: 2px 4px 2px 0 !important;
@@ -160,13 +160,13 @@ document.head.append(E('style', {'type': 'text/css'},
 	opacity: 0.7;
 	background-color: rgba(100 100 100 / 0.2);
 }
-.temp-status-button:hover {
+.luci-temp-status-widget .temp-status-button:hover {
 	opacity: 0.9;
 }
-.temp-status-button:active {
+.luci-temp-status-widget .temp-status-button:active {
 	opacity: 1.0;
 }
-.temp-status-hide-item {
+.luci-temp-status-widget .temp-status-hide-item {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
@@ -180,15 +180,15 @@ document.head.append(E('style', {'type': 'text/css'},
 	background: rgba(100, 100, 100, .12);
 	font-weight: bold;
 }
-.temp-status-hide-item:hover {
+.luci-temp-status-widget .temp-status-hide-item:hover {
 	opacity: 0.9;
 }
-.temp-status-hide-item:active {
+.luci-temp-status-widget .temp-status-hide-item:active {
 	opacity: 1.0;
 }
 @media (max-width: 600px) {
-	.temp-status-temp-area { grid-template-columns: 1fr; }
-	.temp-status-list-item { padding: 13px 14px 10px; }
+	.luci-temp-status-widget .temp-status-temp-area { grid-template-columns: 1fr; }
+	.luci-temp-status-widget .temp-status-list-item { padding: 13px 14px 10px; }
 }
 `));
 
@@ -726,7 +726,7 @@ return baseclass.extend({
 
 		this.makeViewContent();
 
-		return E('div', { 'class': 'cbi-section' }, [
+		return E('div', { 'class': 'cbi-section luci-temp-status-widget' }, [
 			E('div', { 'id': 'temp-status-buttons-wrapper' }, [
 				E('span', {
 					'class': 'temp-status-button',
