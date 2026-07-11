@@ -18,11 +18,20 @@ msgstr "（最近 %d 分钟信息，每 %d 秒刷新）"
 msgid "Average:"
 msgstr "平均："
 
+msgid "Collecting data…"
+msgstr "正在采集数据…"
+
 msgid "Hide"
 msgstr "隐藏"
 
 msgid "Hot:"
 msgstr "最热："
+
+msgid "Hot"
+msgstr "偏热"
+
+msgid "Max"
+msgstr "上限"
 
 msgid "Minimum:"
 msgstr "最低："
@@ -33,8 +42,17 @@ msgstr "温度传感器不可用"
 msgid "Overheat:"
 msgstr "过热："
 
+msgid "Overheat"
+msgstr "过热"
+
 msgid "Peak:"
 msgstr "峰值："
+
+msgid "Normal"
+msgstr "正常"
+
+msgid "Range"
+msgstr "范围"
 
 msgid "Sensor"
 msgstr "传感器"
@@ -42,8 +60,14 @@ msgstr "传感器"
 msgid "Show hidden sensors"
 msgstr "显示已隐藏的传感器"
 
+msgid "Switch view"
+msgstr "切换视图"
+
 msgid "Temperature"
 msgstr "温度"
 
 msgid "This page displays the temperature sensors data."
 msgstr "此页面显示温度传感器的信息。"
+
+msgid "Unavailable"
+msgstr "不可用"

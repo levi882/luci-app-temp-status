@@ -1,0 +1,125 @@
+name: Build OpenWrt 25.12 x86_64
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - master
+    tags:
+      - "v*"
+    paths-ignore:
+      - "README.md"
+      - "screenshots/**"
+  pull_request:
+    paths-ignore:
+      - "README.md"
+      - "screenshots/**"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: openwrt-25.12-x86_64-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  OPENWRT_VERSION: 25.12.5
+  OPENWRT_TARGET: x86/64
+  SDK_ARCHIVE: openwrt-sdk-25.12.5-x86-64_gcc-14.3.0_musl.Linux-x86_64.tar.zst
+
+jobs:
+  build:
+    name: OpenWrt 25.12.5 / x86_64
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends \
+            build-essential clang flex bison g++ gawk gcc-multilib gettext \
+            git libncurses-dev libssl-dev python3-setuptools rsync swig \
+            unzip zlib1g-dev file wget zstd
+
+      - name: Cache SDK and downloads
+        uses: actions/cache@v4
+        with:
+          path: |
+            sdk-cache
+            openwrt-sdk/dl
+          key: openwrt-sdk-${{ env.OPENWRT_VERSION }}-x86_64-${{ hashFiles('Makefile') }}
+          restore-keys: |
+            openwrt-sdk-${{ env.OPENWRT_VERSION }}-x86_64-
+
+      - name: Download and verify OpenWrt SDK
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          base_url="https://downloads.openwrt.org/releases/${OPENWRT_VERSION}/targets/${OPENWRT_TARGET}"
+          mkdir -p sdk-cache openwrt-sdk
+
+          if [ ! -f "sdk-cache/${SDK_ARCHIVE}" ]; then
+            wget --progress=dot:giga -O "sdk-cache/${SDK_ARCHIVE}" "${base_url}/${SDK_ARCHIVE}"
+          fi
+
+          wget -qO sdk-cache/sha256sums "${base_url}/sha256sums"
+          grep " ${SDK_ARCHIVE}$" sdk-cache/sha256sums | \
+            (cd sdk-cache && sha256sum --check)
+
+          tar --zstd -xf "sdk-cache/${SDK_ARCHIVE}" \
+            --strip-components=1 -C openwrt-sdk
+
+      - name: Update package feeds
+        working-directory: openwrt-sdk
+        run: |
+          ./scripts/feeds update -a
+          ./scripts/feeds install -a
+
+      - name: Add package source
+        shell: bash
+        run: |
+          mkdir -p openwrt-sdk/package/luci-app-temp-status
+          rsync -a \
+            --exclude='.git/' \
+            --exclude='.github/' \
+            --exclude='sdk-cache/' \
+            --exclude='openwrt-sdk/' \
+            ./ openwrt-sdk/package/luci-app-temp-status/
+
+      - name: Configure SDK
+        working-directory: openwrt-sdk
+        run: |
+          printf 'CONFIG_PACKAGE_luci-app-temp-status=m\n' > .config
+          make defconfig
+
+      - name: Compile package
+        working-directory: openwrt-sdk
+        run: |
+          make package/luci-app-temp-status/compile -j"$(nproc)" V=s
+
+      - name: Collect APK packages
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts
+
+          find openwrt-sdk/bin/packages -type f \
+            \( -name 'luci-app-temp-status*.apk' -o -name 'luci-i18n-temp-status-zh-cn*.apk' \) \
+            -exec cp -v '{}' artifacts/ \;
+
+          test -n "$(find artifacts -maxdepth 1 -type f -name '*.apk' -print -quit)"
+          sha256sum artifacts/*.apk | tee artifacts/sha256sums
+
+      - name: Upload APK packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: luci-app-temp-status-openwrt-${{ env.OPENWRT_VERSION }}-x86_64
+          path: artifacts/
+          if-no-files-found: error
+          retention-days: 30

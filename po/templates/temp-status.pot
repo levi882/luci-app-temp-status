@@ -7,10 +7,19 @@ msgstr ""
 msgid "Average:"
 msgstr ""
 
+msgid "Collecting data…"
+msgstr ""
+
 msgid "Hide"
 msgstr ""
 
 msgid "Hot:"
+msgstr ""
+
+msgid "Hot"
+msgstr ""
+
+msgid "Max"
 msgstr ""
 
 msgid "Minimum:"
@@ -22,7 +31,16 @@ msgstr ""
 msgid "Overheat:"
 msgstr ""
 
+msgid "Overheat"
+msgstr ""
+
 msgid "Peak:"
+msgstr ""
+
+msgid "Normal"
+msgstr ""
+
+msgid "Range"
 msgstr ""
 
 msgid "Sensor"
@@ -38,5 +56,8 @@ msgid "Temperature"
 msgstr ""
 
 msgid "This page displays the temperature sensors data."
+msgstr ""
+
+msgid "Unavailable"
 msgstr ""
 
