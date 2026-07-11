@@ -21,6 +21,12 @@ msgstr "平均："
 msgid "Collecting data…"
 msgstr "正在采集数据…"
 
+msgid "CPU"
+msgstr "CPU"
+
+msgid "Graphics"
+msgstr "显卡"
+
 msgid "Hide"
 msgstr "隐藏"
 
@@ -35,6 +41,9 @@ msgstr "上限"
 
 msgid "Minimum:"
 msgstr "最低："
+
+msgid "Network"
+msgstr "网卡"
 
 msgid "No temperature sensors available"
 msgstr "温度传感器不可用"
@@ -62,6 +71,12 @@ msgstr "显示已隐藏的传感器"
 
 msgid "Switch view"
 msgstr "切换视图"
+
+msgid "Storage"
+msgstr "硬盘"
+
+msgid "System"
+msgstr "系统"
 
 msgid "Temperature"
 msgstr "温度"

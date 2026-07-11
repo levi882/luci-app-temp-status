@@ -10,6 +10,12 @@ msgstr ""
 msgid "Collecting data…"
 msgstr ""
 
+msgid "CPU"
+msgstr ""
+
+msgid "Graphics"
+msgstr ""
+
 msgid "Hide"
 msgstr ""
 
@@ -23,6 +29,9 @@ msgid "Max"
 msgstr ""
 
 msgid "Minimum:"
+msgstr ""
+
+msgid "Network"
 msgstr ""
 
 msgid "No temperature sensors available"
@@ -50,6 +59,12 @@ msgid "Show hidden sensors"
 msgstr ""
 
 msgid "Switch view"
+msgstr ""
+
+msgid "Storage"
+msgstr ""
+
+msgid "System"
 msgstr ""
 
 msgid "Temperature"

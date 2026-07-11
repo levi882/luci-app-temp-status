@@ -63,6 +63,20 @@ document.head.append(E('style', {'type': 'text/css'},
 	align-items: center;
 	gap: 6px;
 }
+.temp-status-card-title {
+	display: flex;
+	min-width: 0;
+	flex-direction: column;
+	gap: 3px;
+}
+.temp-status-source-kind {
+	color: var(--app-temp-status-muted);
+	font-size: 10px;
+	font-weight: 600;
+	letter-spacing: .06em;
+	line-height: 1;
+	text-transform: uppercase;
+}
 .temp-status-sensor-name {
 	min-width: 0;
 	overflow: hidden;
@@ -246,6 +260,33 @@ return baseclass.extend({
 			`luci-app-${this.viewName}-hiddenItems`, Array.from(this.hiddenItems).join(','));
 		localStorage.setItem(
 			`luci-app-${this.viewName}-view`, this.viewType);
+	},
+
+	getSensorKind(sensor, source) {
+		let identity = [
+			sensor,
+			source.label,
+			source.item,
+			source.path,
+		].filter(Boolean).join(' ').toLowerCase();
+
+		if(/coretemp|k10temp|zenpower|x86_pkg_temp|cpu[_ -]?thermal|soc[_ -]?thermal|package id|\bcpu\b/.test(identity)) {
+			return _('CPU');
+		};
+		if(/nvme|drivetemp|smart|sata|scsi|\bhdd\b|\bssd\b/.test(identity)) {
+			return _('Storage');
+		};
+		if(/amdgpu|nouveau|radeon|i915|\bgpu\b/.test(identity)) {
+			return _('Graphics');
+		};
+		if(/iwlwifi|\bath[0-9a-z_ -]*\b|mt76|wifi|wireless|wlan/.test(identity)) {
+			return _('Network');
+		};
+		if(/acpitz|pch_|nct[0-9]|it87|motherboard|mainboard|chipset/.test(identity)) {
+			return _('System');
+		};
+
+		return _('Sensor');
 	},
 
 	appendHistory() {
@@ -542,6 +583,7 @@ return baseclass.extend({
 					let tempHot = NaN;
 					let tempOverheat = NaN;
 					let tpointsText = [];
+					let sensorKind = this.getSensorKind(sensor, source);
 
 					if(temp !== undefined && temp !== null) {
 						temp = this.formatTemp(temp);
@@ -549,6 +591,9 @@ return baseclass.extend({
 
 					for(let point of Object.values(source.tpoints || {})) {
 						let value = this.formatTemp(point.temp);
+						if(!Number.isFinite(value) || value < -50 || value > 250) {
+							continue;
+						};
 						tpointsText.push(`${point.type}: ${value} °C`);
 
 						if(point.type == 'max' || point.type == 'critical' || point.type == 'emergency') {
@@ -586,10 +631,13 @@ return baseclass.extend({
 
 					this.tempArea.append(E('div', { 'class': 'temp-status-list-item' + itemStyle }, [
 						E('div', { 'class': 'temp-status-card-head' }, [
-							E('span', {
-								'class': 'temp-status-sensor-name',
-								'title': tpointsText.length ? tpointsText.join('\n') : name,
-							}, name),
+							E('span', { 'class': 'temp-status-card-title' }, [
+								E('span', { 'class': 'temp-status-source-kind' }, sensorKind),
+								E('span', {
+									'class': 'temp-status-sensor-name',
+									'title': tpointsText.length ? tpointsText.join('\n') : name,
+								}, name),
+							]),
 							E('span', { 'class': 'temp-status-card-actions' }, [
 								E('span', { 'class': 'temp-status-state' }, state),
 								E('span', {
