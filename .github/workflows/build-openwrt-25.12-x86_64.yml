@@ -104,11 +104,11 @@ jobs:
           tar --zstd -xf "sdk-cache/${SDK_ARCHIVE}" \
             --strip-components=1 -C openwrt-sdk
 
-      - name: Update package feeds
+      - name: Prepare LuCI feed
         working-directory: openwrt-sdk
         run: |
-          ./scripts/feeds update -a
-          ./scripts/feeds install -a
+          ./scripts/feeds update luci
+          ./scripts/feeds install -p luci luci-base
 
       - name: Add package source
         shell: bash
@@ -126,11 +126,11 @@ jobs:
         run: |
           cat > .config <<'EOF'
           CONFIG_PACKAGE_luci-app-temp-status=m
-          CONFIG_LUCI_LANG_zh_Hans=m
+          CONFIG_LUCI_LANG_zh_Hans=y
           EOF
           make defconfig
           grep -q '^CONFIG_PACKAGE_luci-app-temp-status=m$' .config
-          grep -q '^CONFIG_LUCI_LANG_zh_Hans=m$' .config
+          grep -q '^CONFIG_LUCI_LANG_zh_Hans=y$' .config
           grep -q '^CONFIG_PACKAGE_luci-i18n-temp-status-zh-cn=m$' .config
 
       - name: Compile package
